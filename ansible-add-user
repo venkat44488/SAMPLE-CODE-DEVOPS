@@ -1,0 +1,19 @@
+- name: 'Creating user {{ usr }}'
+  user:
+   name: '{{ usr }}'
+#   password: '{{ pas | password_hash('sha512') }}'
+   state: present
+   shell: /bin/bash       # Defaults to /bin/bash
+   system: no             # Defaults to no
+   createhome: yes        # Defaults to yes
+   home: '/home/{{ usr }}'
+  become: yes
+
+- name: "Adding password to user {{ usr }}"
+  shell: 'echo {{ usr }}:{{ pas }} | sudo chpasswd'
+#  shell: 'echo {{ pas }} | passwd {{ usr }} --stdin'
+  become: yes
+
+- name: "Giving sudo permission to user {{ usr }}"
+  shell: 'usermod -aG sudo {{ usr }}'
+  become: yes
