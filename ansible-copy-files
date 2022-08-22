@@ -1,0 +1,31 @@
+- name: "Copying proxy file"
+  become: yes
+  copy:
+   src: "../files/proxy.conf"
+   dest: "/etc/apt/apt.conf.d"
+
+- name: "Copying tar file"
+  become: yes
+  copy:
+   src: "../files/{{ file }}"
+   dest: "/home/venkata"
+
+- name: "Extracting files"
+  become: yes
+  shell: "chdir=/home/venkata tar -xzf {{ file }}"
+
+#- name: "Adding Proxy"
+#  shell: "cat /home/venkata/proxy.txt > /etc/apt/apt.conf.d/proxy.conf"
+#  become: yes
+
+- name: "Updating packages"
+  shell: "apt-get update"
+  become: yes
+
+- name: "Upgrading packages"
+  shell: "apt-get upgrade -y"
+  become: yes
+
+- name: "Deleting proxy file"
+  shell: "rm /etc/apt/apt.conf.d/proxy.conf"
+  become: yes
