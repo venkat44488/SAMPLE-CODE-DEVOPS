@@ -1,0 +1,46 @@
+=========add user-------------------
+---
+- name: playbook for add users
+  hosts: dev
+  become: true
+  vars_files:
+    - users.yaml
+  tasks:
+   - name: Add user {{user}} to remote server
+     user:
+       name: "{{user}}"
+       password: "{{password}}"
+       state: "present"
+       shell: /bin/bash
+       system: false
+       createhome: true
+       append: yes
+
+   - name: provide sudo previligies
+     command: usermod -aG sudo "{{user}}"
+
+---
+- name: playbook for removing users
+  hosts: anand
+  become: true
+  vars_files:
+    - users.yaml
+  tasks:
+   - name: remove user {{user}} from remote server
+     user:
+       name: "{{user}}"
+       state: absent
+       remove: yes
+       force: yes
+
+
+root@internet:/home/venkat# cat users.yaml
+# CHANGE USER VALUE AS YOU WANT
+user: subrata
+
+# ENCRYPTED PASSWORD.... THE OUTPUT OF command "mkpasswd --method=SHA-256 Asdf@135"
+password: $5$YSP8ifqVYi$bk5OSqKDHA.oSjH.YK6KUlN5FlB2xcjiy7YShIz7xT8
+# rohan's password: $5$uAKyGrfXkAe$rUCJxyh7gTzimTd4Aco.kXxPrHq1kpveZggl.2NOlu/
+
+# POSIBLE ALLOWED VALUES ARE "present" and "absent"
+state: present
